@@ -1,4 +1,3 @@
-
 const elCountry = document.getElementById('country');
 const elFormat = document.getElementById('formatValid');
 const elCards = document.getElementById('cards');
@@ -58,12 +57,16 @@ function render(identity) {
 }
 
 async function fetchIdentity() {
-  const params = new URLSearchParams({
-    country: elCountry.value,
-    format_valid: elFormat.value
+  // POST JSON instead of GET query params
+  const res = await fetch(`./api/identity`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      country: elCountry.value,
+      format_valid: elFormat.value
+    }),
+    cache: 'no-store'
   });
-  // Relative path keeps it inside /FakeIdentity/ on GH Pages
-  const res = await fetch(`./api/identity?${params.toString()}`, { cache: 'no-store' });
   if (!res.ok) throw new Error('API error');
   return res.json();
 }

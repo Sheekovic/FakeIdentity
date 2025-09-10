@@ -28,7 +28,7 @@ Endpoints:
 - /api/address?country=US|CA|AU&format_valid=true|false
 - /api/phone?country=US|CA|AU
 - /api/email?first_name=...&last_name=...
-- /api/identity?country=US|CA|AU&format_valid=true|false
+- /api/identity  (POST preferred; accepts JSON body { country, format_valid })
 
 Examples (run in the browser console on the site):
 ```

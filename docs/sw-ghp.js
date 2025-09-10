@@ -12,7 +12,9 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
-  if (event.request.method !== 'GET') return;
+  const method = event.request.method.toUpperCase();
+  // Allow GET and POST (and let OPTIONS fall through if needed)
+  if (!['GET','POST'].includes(method)) return;
 
   // Only handle requests within our own scope and targeting /api/*
   const scopePath = new URL(self.registration.scope).pathname.replace(/\/+$/, '');
@@ -20,7 +22,7 @@ self.addEventListener('fetch', (event) => {
   const pathInScope = url.pathname.slice(scopePath.length) || '/';
   if (!pathInScope.startsWith('/api/')) return;
 
-  event.respondWith(handleApi(pathInScope, url));
+  event.respondWith(handleApi(pathInScope, url, event.request));
 });
 
 function json(data, init = 200) {
@@ -104,10 +106,24 @@ function buildIdentity(country="US", formatValid=true) {
 }
 
 /* ------------------- API HANDLERS ------------------- */
-async function handleApi(pathInScope, url) {
+async function handleApi(pathInScope, url, request) {
+  // Default params from query string
   const qs = Object.fromEntries(url.searchParams.entries());
-  const country = (qs.country || 'US').toUpperCase();
-  const formatValid = (qs.format_valid ?? 'true') !== 'false';
+  let country = (qs.country || 'US').toUpperCase();
+  let formatValid = (qs.format_valid ?? 'true') !== 'false';
+
+  // If POST with JSON, override from body
+  if (request && request.method === 'POST') {
+    try {
+      const body = await request.clone().json();
+      if (body && typeof body === 'object') {
+        if (body.country) country = String(body.country).toUpperCase();
+        if (typeof body.format_valid !== 'undefined') {
+          formatValid = String(body.format_valid) !== 'false';
+        }
+      }
+    } catch (_) { /* ignore non-JSON */ }
+  }
 
   if (pathInScope === '/api/health') {
     return json({ status: 'ok', version: VERSION });
@@ -127,6 +143,7 @@ async function handleApi(pathInScope, url) {
     return json(randomAddress(country, formatValid));
   }
   if (pathInScope === '/api/identity') {
+    // Support POST body overrides; also works with GET params for backward compatibility
     return json(buildIdentity(country, formatValid));
   }
 
