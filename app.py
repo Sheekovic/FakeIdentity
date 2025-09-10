@@ -23,7 +23,8 @@ def home():
             "/person": "GET - Generate person (first_name, last_name)",
             "/address": "GET - Generate address (supports ?country=US|CA|AU)",
             "/email": "GET - Generate email (supports ?first_name=X&last_name=Y)",
-            "/phone": "GET - Generate phone (supports ?country=US|CA|AU)"
+            "/phone": "GET - Generate phone (supports ?country=US|CA|AU)",
+            "/api/*": "Same endpoints under /api/* for parity with GitHub Pages"
         },
         "parameters": {
             "country": "US (default), CA, AU",
@@ -32,12 +33,14 @@ def home():
     })
 
 @app.route("/person", methods=["GET"])
+@app.route("/api/person", methods=["GET"])
 def get_person():
     """Generate a random person"""
     person = random_person()
     return jsonify(person)
 
 @app.route("/address", methods=["GET"])
+@app.route("/api/address", methods=["GET"])
 def get_address():
     """Generate a random address"""
     country = request.args.get("country", "US").upper()
@@ -53,6 +56,7 @@ def get_address():
         return jsonify({"error": str(e)}), 400
 
 @app.route("/email", methods=["GET"])
+@app.route("/api/email", methods=["GET"])
 def get_email():
     """Generate a random email"""
     first_name = request.args.get("first_name")
@@ -67,6 +71,7 @@ def get_email():
     return jsonify({"email": email, "first_name": first_name, "last_name": last_name})
 
 @app.route("/phone", methods=["GET"])
+@app.route("/api/phone", methods=["GET"])
 def get_phone():
     """Generate a random phone number"""
     country = request.args.get("country", "US").upper()
@@ -78,6 +83,7 @@ def get_phone():
     return jsonify({"phone": phone, "country": country})
 
 @app.route("/identity", methods=["GET"])
+@app.route("/api/identity", methods=["GET"])
 def get_identity():
     """Generate a complete random identity"""
     country = request.args.get("country", "US").upper()

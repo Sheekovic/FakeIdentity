@@ -72,6 +72,15 @@ The API will be available at `http://127.0.0.1:5000/`.
 - `/email`: Returns a random email. Accepts `first_name` and `last_name` as query parameters.
 - `/identity`: Returns a random identity (first name, last name, email, address, phone). Accepts `country` as a query parameter (`US`, `CA`, `AU`).
 
+## GitHub Pages (Static JS + Service Worker API)
+This repo includes a static site under `/docs` that registers a Service Worker to serve API-like endpoints on the client:
+
+- /api/person
+- /api/address?country=US|CA|AU&format_valid=true|false
+- /api/phone?country=US|CA|AU
+- /api/email?first_name=...&last_name=...
+- /api/identity?country=US|CA|AU&format_valid=...
+
 ## License
 MIT
 
