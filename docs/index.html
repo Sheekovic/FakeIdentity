@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FakeIdentity</title>
+  <meta name="description" content="Generate colorful fake identities in your browser." />
+  <link rel="stylesheet" href="./ghp.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>FakeIdentity</h1>
+    <p>Create realistic fake identities with a simple, colorful interface. Works fully on GitHub Pages.</p>
+  </header>
+
+  <section class="controls">
+    <div class="control">
+      <label for="country">Country</label>
+      <select id="country">
+        <option value="US">US</option>
+        <option value="CA">CA</option>
+        <option value="AU">AU</option>
+      </select>
+    </div>
+    <div class="control">
+      <label for="formatValid">Address format</label>
+      <select id="formatValid">
+        <option value="true">Format-valid</option>
+        <option value="false">Clearly fake</option>
+      </select>
+    </div>
+    <div class="control buttons">
+      <button id="btnGenerate" class="primary">Generate</button>
+      <button id="btnCopy">Copy JSON</button>
+    </div>
+  </section>
+
+  <main>
+    <section class="cards" id="cards"></section>
+    <section class="json">
+      <h3>Raw JSON</h3>
+      <pre id="json">{}</pre>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <small>Static API powered by a Service Worker.</small>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="./ghp.js" type="module"></script>
+</body>
+</html>

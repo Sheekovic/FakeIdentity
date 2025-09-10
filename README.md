@@ -1,31 +1,41 @@
-# fake_identity
+# Fake Identity (Static)
 
 Generate clearly fictitious identities for testing:
 - First name, last name
 - Email (uses RFC 2606 example domains)
 - Phone (US/CA NANP, AU mobile)
-- Address (US, Canada, Australia) with **non-routable** defaults
+- Address (US, Canada, Australia) with optional format-valid output
 
-## 🚀 Quick Start on GitHub
+## Online Demo (GitHub Pages)
+Use it in your browser:
+- https://sheekovic.github.io/FakeIdentity/
 
-### Option 1: GitHub Codespaces (Recommended)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/yourusername/fake-identity)
+Features:
+- Modern, simple, colorful UI
+- Generates identity, address, phone, and email
+- Works entirely on GitHub Pages (no server required)
+- Service Worker exposes API-like endpoints under /api/* within the page scope
 
-1. Click the "Open in GitHub Codespaces" button above
-2. Wait for the environment to load (auto-installs dependencies)
-3. Run: `python app.py`
-4. Access the API at the forwarded port (usually shown in VS Code)
+Note: Open the site first so the Service Worker can register, then you can call the endpoints from that page or same origin.
 
-### Option 2: Clone and Run Locally
+### Static API Endpoints (Service Worker)
+Parameters:
+- country: US (default), CA, AU
+- format_valid: true (default), false (clearly fake but structured)
 
-## 🌐 Live API
+Endpoints:
+- /api/person
+- /api/address?country=US|CA|AU&format_valid=true|false
+- /api/phone?country=US|CA|AU
+- /api/email?first_name=...&last_name=...
+- /api/identity?country=US|CA|AU&format_valid=true|false
 
-**Public API Endpoint**: `https://your-deployment-url.com/`
-
-Try it now:
-- [Get random identity](https://your-deployment-url.com/identity)
-- [Get random US address](https://your-deployment-url.com/address?country=US)
-- [Get random person](https://your-deployment-url.com/person)
+Examples (run in the browser console on the site):
+```
+fetch('/FakeIdentity/api/person').then(res => res.json()).then(console.log);
+fetch('/FakeIdentity/api/address?country=US').then(res => res.json()).then(console.log);
+fetch('/FakeIdentity/api/identity?country=AU&format_valid=true').then(res => res.json()).then(console.log);
+```
 
 ## Why it's safe by default
 - Emails use `example.com` / `example.net` / `example.org` (RFC 2606 reserved).
@@ -39,67 +49,3 @@ Try it now:
 ## 🚀 Quick Start
 
 ### API Usage (No Installation Required)
-
-## Install
-```
-```bash
-pip install .
-```
-
-## Usage
-from fake_identity import random_person, random_address, random_email
-
-p = random_person()  # dict: first_name, last_name
-addr_us = random_address(country="US")     # non-routable by default
-addr_ca = random_address(country="CA")
-addr_au = random_address(country="AU")
-email = random_email(p["first_name"], p["last_name"])  # example.com by default
-
-## CLI
-python -m fake_identity --count 3 --country US
-
-## Flask API
-To use the Flask API, run the following command:
-```bash
-flask run
-```
-
-The API will be available at `http://127.0.0.1:5000/`.
-
-### Endpoints
-- `/person`: Returns a random person (first name, last name).
-- `/address`: Returns a random address. Accepts `country` as a query parameter (`US`, `CA`, `AU`).
-- `/email`: Returns a random email. Accepts `first_name` and `last_name` as query parameters.
-- `/identity`: Returns a random identity (first name, last name, email, address, phone). Accepts `country` as a query parameter (`US`, `CA`, `AU`).
-
-## GitHub Pages (Static JS + Service Worker API)
-This repo includes a static site under `/docs` that registers a Service Worker to serve API-like endpoints on the client:
-
-- /api/person
-- /api/address?country=US|CA|AU&format_valid=true|false
-- /api/phone?country=US|CA|AU
-- /api/email?first_name=...&last_name=...
-- /api/identity?country=US|CA|AU&format_valid=...
-
-## License
-MIT
-
----
-
-# `fake_identity/__init__.py`
-
-```python
-from .generator import (
-    random_first_name,
-    random_last_name,
-    random_person,
-    random_email,
-    random_address,
-)
-__all__ = [
-    "random_first_name",
-    "random_last_name",
-    "random_person",
-    "random_email",
-    "random_address",
-]
