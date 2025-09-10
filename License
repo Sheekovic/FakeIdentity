@@ -1,0 +1,20 @@
+
+---
+
+# `fake_identity/__init__.py`
+
+```python
+from .generator import (
+    random_first_name,
+    random_last_name,
+    random_person,
+    random_email,
+    random_address,
+)
+__all__ = [
+    "random_first_name",
+    "random_last_name",
+    "random_person",
+    "random_email",
+    "random_address",
+]

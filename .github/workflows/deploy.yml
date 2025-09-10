@@ -1,0 +1,68 @@
+name: Test and Validate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install pytest
+    
+    - name: Test package imports
+      run: |
+        python -c "from fake_identity import random_person, random_phone; print('✅ Package imports successful')"
+        python -m fake_identity --count 1 --country US
+    
+    - name: Test Flask app
+      run: |
+        python -c "
+        import sys
+        sys.path.append('.')
+        from app import app
+        with app.test_client() as client:
+            response = client.get('/')
+            assert response.status_code == 200
+            response = client.get('/identity')
+            assert response.status_code == 200
+            response = client.get('/person')
+            assert response.status_code == 200
+            print('✅ Flask app tests successful')
+        "
+    
+    - name: Test CLI with different options
+      run: |
+        python -m fake_identity --count 2 --country CA
+        python -m fake_identity --count 1 --country AU --format-valid
+        echo "✅ CLI tests successful"
+
+  validate-structure:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Validate project structure
+      run: |
+        echo "📁 Checking project structure..."
+        test -f "fake_identity/__init__.py" || (echo "❌ Missing fake_identity/__init__.py" && exit 1)
+        test -f "fake_identity/generator.py" || (echo "❌ Missing fake_identity/generator.py" && exit 1)
+        test -f "fake_identity/__main__.py" || (echo "❌ Missing fake_identity/__main__.py" && exit 1)
+        test -f "app.py" || (echo "❌ Missing app.py" && exit 1)
+        test -f "requirements.txt" || (echo "❌ Missing requirements.txt" && exit 1)
+        test -f "pyproject.toml" || (echo "❌ Missing pyproject.toml" && exit 1)
+        echo "✅ Project structure is valid"

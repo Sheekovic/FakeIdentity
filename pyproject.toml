@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fake-identity"
+version = "0.1.0"
+description = "Generate clearly fictitious names, emails, phones, and addresses (US/CA/AU) with non-routable defaults."
+authors = [{name = "Your Name"}]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+  "requests>=2.0",
+  "Flask>=2.0"
+]
+
+[project.scripts]
+fake-identity = "fake_identity.generator:_cli"
