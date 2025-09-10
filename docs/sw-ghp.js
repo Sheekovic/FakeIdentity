@@ -50,7 +50,7 @@ function randomPerson(){
   return { first_name: pick(FIRST), last_name: pick(LAST) };
 }
 function randomEmail(first, last){
-  const dom = pick(["example.com","example.net","example.org"]);
+  const dom = pick(["gmail.com","mail.net","riceway.org"]);
   return `${slug(first)}.${slug(last)}@${dom}`;
 }
 function randomCity(){
